@@ -1,0 +1,10 @@
+<library path="odometry_gz_hw_interface">
+  <class
+    name="odometry_gz_hw_interface/OdometryHardware"
+    type="odometry_gz_hw_interface::OdometryHardware"
+    base_class_type="gz_ros2_control::GazeboSimSystemInterface">
+    <description>
+      GazeboSimSystemInterface that exposes a nav_msgs/Odometry topic as ros2_control state interfaces.
+    </description>
+  </class>
+</library>
