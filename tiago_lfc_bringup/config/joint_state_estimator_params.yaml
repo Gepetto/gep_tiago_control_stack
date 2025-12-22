@@ -1,0 +1,103 @@
+---
+joint_state_estimator:
+  ros__parameters:
+    type: linear_feedback_controller/JointStateEstimator
+    state_interfaces: [
+      base_odom/position.x,
+      base_odom/position.y,
+      base_odom/position.z,
+      base_odom/orientation.x,
+      base_odom/orientation.y,
+      base_odom/orientation.z,
+      base_odom/orientation.w,
+      
+      wheel_left_joint/position,
+      # wheel_right_joint/position,
+      # torso_lift_joint/position,
+      arm_1_joint/position,
+      arm_2_joint/position,
+      arm_3_joint/position,
+      arm_4_joint/position,
+      arm_5_joint/position,
+      arm_6_joint/position,
+      arm_7_joint/position,
+
+      base_odom/linear_velocity.x,
+      base_odom/linear_velocity.y,
+      base_odom/linear_velocity.z,
+      base_odom/angular_velocity.x,
+      base_odom/angular_velocity.y,
+      base_odom/angular_velocity.z,
+      
+      wheel_left_joint/velocity,
+      # wheel_right_joint/velocity,
+      # torso_lift_joint/velocity,
+      arm_1_joint/velocity,
+      arm_2_joint/velocity,
+      arm_3_joint/velocity,
+      arm_4_joint/velocity,
+      arm_5_joint/velocity,
+      arm_6_joint/velocity,
+      arm_7_joint/velocity,
+
+      wheel_left_joint/effort,
+      # wheel_right_joint/effort,
+      # torso_lift_joint/effort,
+      arm_1_joint/effort,
+      arm_2_joint/effort,
+      arm_3_joint/effort,
+      arm_4_joint/effort,
+      arm_5_joint/effort,
+      arm_6_joint/effort,
+      arm_7_joint/effort
+      ]
+    command_interfaces: [
+      linear_feedback_controller/base_translation_x,
+      linear_feedback_controller/base_translation_y,
+      linear_feedback_controller/base_translation_z,
+      linear_feedback_controller/base_orientation_qx,
+      linear_feedback_controller/base_orientation_qy,
+      linear_feedback_controller/base_orientation_qz,
+      linear_feedback_controller/base_orientation_qw,
+
+      linear_feedback_controller/wheel_left_joint/position,
+      # linear_feedback_controller/wheel_right_joint/position,
+      # linear_feedback_controller/torso_lift_joint/position,
+      linear_feedback_controller/arm_1_joint/position,
+      linear_feedback_controller/arm_2_joint/position,
+      linear_feedback_controller/arm_3_joint/position,
+      linear_feedback_controller/arm_4_joint/position,
+      linear_feedback_controller/arm_5_joint/position,
+      linear_feedback_controller/arm_6_joint/position,
+      linear_feedback_controller/arm_7_joint/position,
+
+      linear_feedback_controller/base_linear_velocity_x,
+      linear_feedback_controller/base_linear_velocity_y,
+      linear_feedback_controller/base_linear_velocity_z,
+      linear_feedback_controller/base_angular_velocity_x,
+      linear_feedback_controller/base_angular_velocity_y,
+      linear_feedback_controller/base_angular_velocity_z,
+
+      linear_feedback_controller/wheel_left_joint/velocity,
+      # linear_feedback_controller/wheel_right_joint/velocity,
+      # linear_feedback_controller/torso_lift_joint/velocity,
+      linear_feedback_controller/arm_1_joint/velocity,
+      linear_feedback_controller/arm_2_joint/velocity,
+      linear_feedback_controller/arm_3_joint/velocity,
+      linear_feedback_controller/arm_4_joint/velocity,
+      linear_feedback_controller/arm_5_joint/velocity,
+      linear_feedback_controller/arm_6_joint/velocity,
+      linear_feedback_controller/arm_7_joint/velocity,
+
+
+      linear_feedback_controller/wheel_left_joint/effort,
+      # linear_feedback_controller/wheel_right_joint/effort,
+      # linear_feedback_controller/torso_lift_joint/effort,
+      linear_feedback_controller/arm_1_joint/effort,
+      linear_feedback_controller/arm_2_joint/effort,
+      linear_feedback_controller/arm_3_joint/effort,
+      linear_feedback_controller/arm_4_joint/effort,
+      linear_feedback_controller/arm_5_joint/effort,
+      linear_feedback_controller/arm_6_joint/effort,
+      linear_feedback_controller/arm_7_joint/effort
+      ]
