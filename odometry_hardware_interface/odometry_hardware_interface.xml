@@ -1,0 +1,9 @@
+<library path="odometry_hardware_interface">
+  <class name="odometry_hardware_interface/OdometryHardware" 
+         type="odometry_hardware_interface::OdometryHardware" 
+         base_class_type="hardware_interface::SensorInterface">
+    <description>
+      Hardware interface reading nav_msgs/Odometry from a topic.
+    </description>
+  </class>
+</library>
