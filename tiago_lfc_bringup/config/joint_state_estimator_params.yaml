@@ -10,7 +10,7 @@ joint_state_estimator:
       base_odom/orientation.y,
       base_odom/orientation.z,
       base_odom/orientation.w,
-      
+
       wheel_left_joint/position,
       # wheel_right_joint/position,
       # torso_lift_joint/position,
@@ -28,7 +28,7 @@ joint_state_estimator:
       base_odom/angular_velocity.x,
       base_odom/angular_velocity.y,
       base_odom/angular_velocity.z,
-      
+
       wheel_left_joint/velocity,
       # wheel_right_joint/velocity,
       # torso_lift_joint/velocity,

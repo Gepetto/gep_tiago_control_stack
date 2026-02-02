@@ -8,5 +8,3 @@ pd_plus_controller:
     p_gains: [50.0, 50.0, 50.0, 50.0, 10.0, 5.0, 5.0]
     d_gains: [0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.0]
     controller_period: 0.01
-
-

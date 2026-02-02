@@ -4,7 +4,7 @@ The version considered here is a differential mobile base equipped with a torso 
 Dependencies
 --------------
 
-gep_tiago_control_stack is based on the Tiago harmonic project developed by 
+gep_tiago_control_stack is based on the Tiago harmonic project developed by
 Juan Carlos Manzanares Serrano, Francisco Martín Rico, and Juan Sebastían Cely Gutiérrez.
 We are very thankful to them for providing this open source simulation based on Gazebo Harmonic.
 
