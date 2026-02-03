@@ -10,6 +10,7 @@ MPC implementation example using Crocoddyl for Tiago control.
 
 Two nodes are available once simulation is running:
 - `test_ocp_reaching.py` - Visualizes OCP solutions offline (uses meshcat)
+![OPC Demo](tiago_simple_mpc/media/cartesian_OCP2.gif)
 - `cartesian_target_mpc_node.py` - Runs MPC in closed-loop with Gazebo
 
 ## Installation
