@@ -14,7 +14,7 @@ class TrajectoryVisualizer:
     """
     Handles MeshCat visualization for robot trajectories.
     """
-    
+
     def __init__(
         self,
         viz: MeshcatVisualizer,
@@ -23,7 +23,7 @@ class TrajectoryVisualizer:
         frame_id: int,
         target_pose: pin.SE3,
         dt: float,
-        logger: Node
+        logger: Node,
     ):
         """
         Args:
@@ -42,9 +42,10 @@ class TrajectoryVisualizer:
         self.target_pose = target_pose
         self.dt = dt
         self.logger = logger
-    
-    
-    def replay_trajectory(self, trajectory_q: list, fps: int = 30, slowdown: float = 1.0):
+
+    def replay_trajectory(
+        self, trajectory_q: list, fps: int = 30, slowdown: float = 1.0
+    ):
         """
         Replay a trajectory in MeshCat with animated end-effector sphere.
 
@@ -81,13 +82,13 @@ class TrajectoryVisualizer:
             pin.updateFramePlacement(self.model, self.data, self.frame_id)
             ee_pos = self.data.oMf[self.frame_id].translation.copy()
 
-            self.viz.viewer["ee_sphere"].set_transform(
-                tf.translation_matrix(ee_pos)
-            )
+            self.viz.viewer["ee_sphere"].set_transform(tf.translation_matrix(ee_pos))
 
             # Print progress every 10 frames
             if i % 10 == 0:
-                distance_to_target = np.linalg.norm(ee_pos - self.target_pose.translation)
+                distance_to_target = np.linalg.norm(
+                    ee_pos - self.target_pose.translation
+                )
                 self.logger.info(
                     f"  Frame {i}/{len(trajectory_q)} | "
                     f"Distance to target: {distance_to_target:.4f}m"
@@ -98,8 +99,7 @@ class TrajectoryVisualizer:
         # Hold final state
         self.logger.info("Replay completed!")
         time.sleep(2.0)
-    
-    
+
     def display_results(self, xs_solution: list, us_solution: list, cost: float):
         """
         Display OCP solution results with statistics.
@@ -117,7 +117,7 @@ class TrajectoryVisualizer:
         self.logger.info(f"Final cost: {cost:.6e}")
 
         # Check final end-effector position
-        q_final = xs_solution[-1][:self.model.nq]
+        q_final = xs_solution[-1][: self.model.nq]
         pin.forwardKinematics(self.model, self.data, q_final)
         pin.updateFramePlacement(self.model, self.data, self.frame_id)
         ee_pos_final = self.data.oMf[self.frame_id].translation
@@ -130,7 +130,7 @@ class TrajectoryVisualizer:
 
         # Control statistics
         u_norms = [np.linalg.norm(u) for u in us_solution]
-        self.logger.info(f"Control effort:")
+        self.logger.info("Control effort:")
         self.logger.info(f"   - Max:  {np.max(u_norms):.3f}")
         self.logger.info(f"   - Mean: {np.mean(u_norms):.3f}")
         self.logger.info(f"   - Min:  {np.min(u_norms):.3f}")
@@ -138,9 +138,10 @@ class TrajectoryVisualizer:
         # Joint limits check
         q_limits_violated = False
         for i, q in enumerate(xs_solution):
-            q_vec = q[:self.model.nq]
-            if np.any(q_vec < self.model.lowerPositionLimit) or \
-               np.any(q_vec > self.model.upperPositionLimit):
+            q_vec = q[: self.model.nq]
+            if np.any(q_vec < self.model.lowerPositionLimit) or np.any(
+                q_vec > self.model.upperPositionLimit
+            ):
                 q_limits_violated = True
                 self.logger.warn(f"Joint limits violated at step {i}")
                 break
@@ -149,13 +150,13 @@ class TrajectoryVisualizer:
             self.logger.info("All joint limits respected")
 
         self.logger.info("=" * 60)
-        
+
     def replay_trajectory_loop(
-        self, 
-        trajectory_q: list, 
-        fps: int = 30, 
+        self,
+        trajectory_q: list,
+        fps: int = 30,
         slowdown: float = 1.0,
-        pause_between_loops: float = 1.0
+        pause_between_loops: float = 1.0,
     ):
         """
         Replay trajectory in infinite loop until interrupted.
@@ -184,17 +185,14 @@ class TrajectoryVisualizer:
             while True:
                 loop_count += 1
                 self.logger.info(f"Loop {loop_count}")
-                
+
                 # Replay once
                 self.replay_trajectory(
-                    trajectory_q=trajectory_q,
-                    fps=fps,
-                    slowdown=slowdown
+                    trajectory_q=trajectory_q, fps=fps, slowdown=slowdown
                 )
-                
+
                 # Pause between loops
                 time.sleep(pause_between_loops)
-                
+
         except KeyboardInterrupt:
             self.logger.info(f"\nReplay stopped after {loop_count} loops")
-

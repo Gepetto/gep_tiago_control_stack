@@ -23,5 +23,3 @@ u_weights:
   - 1.0 # [u 6]  Torque of arm_5_joint: wrist 1
   - 1.0 # [u 7]  Torque of arm_6_joint: wrist 2
   - 1.0 # [u 8]  Torque of arm_7_joint: wrist 3
-
-

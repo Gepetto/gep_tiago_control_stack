@@ -6,23 +6,24 @@ Handles differential drive kinematics for wheeled base + arm joints
 import numpy as np
 import crocoddyl
 
+
 class ActuationModelPlanarDrive(crocoddyl.ActuationModelAbstract):
     """
     Actuation model for a planar differential drive robot with manipulator arm.
 
-    Maps control inputs [u_wheel_left, u_wheel_right, u_arm_joints...] 
+    Maps control inputs [u_wheel_left, u_wheel_right, u_arm_joints...]
     to generalized forces [tau_base_x, tau_base_y, tau_base_theta, tau_arm].
 
     Key concept:
     - Wheel torques generate forces on the planar base via differential drive kinematics
     - The Jacobian relates wheel velocities to base velocities
     - We use the transpose to map wheel torques to base forces
-    
+
     STATE STRUCTURE (reduced model):
     - q: [x, y, cos(θ), sin(θ), q_arm1, ..., q_arm7]  (11D: planar base + 7 arm)
     - v: [vx, vy, ωz, v_arm1, ..., v_arm7]  (10D: base 3DOF + 7 arm)
     - NO wheel positions/velocities in state!
-    
+
     Base representation:
     - Position: (x, y) ∈ ℝ²
     - Orientation: θ represented as (cos θ, sin θ) on unit circle S¹
@@ -53,24 +54,30 @@ class ActuationModelPlanarDrive(crocoddyl.ActuationModelAbstract):
         # v_x = r * (ω_L + ω_R) / 2
         # v_y = 0  (non-holonomic constraint)
         # ω_z = r * (ω_R - ω_L) / d
-        self.J_diff = np.array([
-            [r/2,  r/2],      # v_x contribution
-            [0.0,  0.0],      # v_y = 0 (non-holonomic)
-            [-r/d, r/d]       # ω_z contribution
-        ])
+        self.J_diff = np.array(
+            [
+                [r / 2, r / 2],  # v_x contribution
+                [0.0, 0.0],  # v_y = 0 (non-holonomic)
+                [-r / d, r / d],  # ω_z contribution
+            ]
+        )
 
         # Torque matrix:
         # Maps [τ_L, τ_R] → [F_x, F_y, M_z]
-        self.J_force = np.array([
-            [1/r,      1/r],        # F_x = (τ_L + τ_R) / r
-            [0.0,      0.0],        # F_y = 0 (non-holonomic)
-            [-d/(2*r), d/(2*r)]     # M_z = d/(2r) * (τ_R - τ_L)
-        ])
+        self.J_force = np.array(
+            [
+                [1 / r, 1 / r],  # F_x = (τ_L + τ_R) / r
+                [0.0, 0.0],  # F_y = 0 (non-holonomic)
+                [-d / (2 * r), d / (2 * r)],  # M_z = d/(2r) * (τ_R - τ_L)
+            ]
+        )
 
-        print(f"[ActuationPlanarDrive] Initialized (REDUCED STATE):")
-        print(f"  nq = {state.nq} (4 planar base + {state.nq-4} arm) - NO wheel joints")
-        print(f"  nv = {state.nv} (3 base velocities + {state.nv-3} arm)")
-        print(f"  nu = {nu} (2 wheels + {nu-2} arm joints)")
+        print("[ActuationPlanarDrive] Initialized (REDUCED STATE):")
+        print(
+            f"  nq = {state.nq} (4 planar base + {state.nq - 4} arm) - NO wheel joints"
+        )
+        print(f"  nv = {state.nv} (3 base velocities + {state.nv - 3} arm)")
+        print(f"  nu = {nu} (2 wheels + {nu - 2} arm joints)")
         print(f"  Wheel radius: {wheel_radius:.4f} m")
         print(f"  Wheel separation: {wheel_separation:.4f} m")
         print(f"  Force Jacobian (wheels→base):\n{self.J_force}")
@@ -93,11 +100,13 @@ class ActuationModelPlanarDrive(crocoddyl.ActuationModelAbstract):
                     Base (3)            Arms (7)
         """
         # Extract controls
-        u_wheels = u[0:2]       # [torque_left, torque_right]
-        u_arm = u[2:]           # Arm joint torques
+        u_wheels = u[0:2]  # [torque_left, torque_right]
+        u_arm = u[2:]  # Arm joint torques
 
         assert u_wheels.shape == (2,), f"u_wheels should be (2,), got {u_wheels.shape}"
-        assert u_arm.shape == (self.state.nv - 3,), f"u_arm should be ({self.state.nv - 3},), got {u_arm.shape}"
+        assert u_arm.shape == (self.state.nv - 3,), (
+            f"u_arm should be ({self.state.nv - 3},), got {u_arm.shape}"
+        )
 
         # Map wheel torques to base forces via Jacobian
         # τ_base = J * τ_wheels
@@ -105,8 +114,8 @@ class ActuationModelPlanarDrive(crocoddyl.ActuationModelAbstract):
 
         # Build generalized force vector (reduced)
         # Structure: [tau_base (3), tau_arm (7)]
-        data.tau[:3] = tau_base      # Base forces [F_x, F_y, M_z]
-        data.tau[3:] = u_arm         # Arm torques
+        data.tau[:3] = tau_base  # Base forces [F_x, F_y, M_z]
+        data.tau[3:] = u_arm  # Arm torques
 
     def calcDiff(self, data, x, u):
         """
@@ -119,7 +128,7 @@ class ActuationModelPlanarDrive(crocoddyl.ActuationModelAbstract):
         dtau_du structure (10 x 9):
                 u_L   u_R  u_arm[0] ... u_arm[6]
         τ[0]  │ 1/r   1/r      0    ...    0    │  F_x
-        τ[1]  │  0     0       0    ...    0    │  F_y  
+        τ[1]  │  0     0       0    ...    0    │  F_y
         τ[2]  │-d/2r  d/2r     0    ...    0    │  M_z
         τ[3]  │  0     0       1    ...    0    │  τ_arm1
         τ[4]  │  0     0       0    ...    0    │  τ_arm2
@@ -149,5 +158,6 @@ class ActuationDataPlanarDrive(crocoddyl.ActuationDataAbstract):
     Data container for ActuationModelPlanarDrive.
     Inherits standard structure from Crocoddyl.
     """
+
     def __init__(self, model):
         crocoddyl.ActuationDataAbstract.__init__(self, model)

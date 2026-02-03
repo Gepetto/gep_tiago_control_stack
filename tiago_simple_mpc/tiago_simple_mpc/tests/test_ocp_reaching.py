@@ -22,58 +22,60 @@ from linear_feedback_controller_msgs_py.numpy_conversions import sensor_msg_to_n
 
 from tiago_simple_mpc.ocp.visualizer import TrajectoryVisualizer
 
-from rclpy.qos import (
-    QoSProfile,
-    ReliabilityPolicy,
-    DurabilityPolicy,
-    HistoryPolicy
-)
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 
 import meshcat
 import meshcat.geometry as g
 import meshcat.transformations as tf
 from pinocchio.visualize import MeshcatVisualizer
 
+
 class OCPReachingNode(Node):
     """Simple node to test OCP resolution on Tiago."""
-    
+
     def __init__(self):
-        super().__init__('ocp_reaching_test')
-        
+        super().__init__("ocp_reaching_test")
+
         self.dt = 0.01
-        self.horizon_steps = 100 # T
+        self.horizon_steps = 100  # T
         self.has_free_flyer = True
-          
+
         target_joints = [
             # 'torso_lift_joint',
-            'arm_1_joint', 'arm_2_joint', 'arm_3_joint',
-            'arm_4_joint', 'arm_5_joint', 'arm_6_joint', 'arm_7_joint'
+            "arm_1_joint",
+            "arm_2_joint",
+            "arm_3_joint",
+            "arm_4_joint",
+            "arm_5_joint",
+            "arm_6_joint",
+            "arm_7_joint",
         ]
-        
-        self.model, self.data, self.visual_model, self.visual_data = load_reduced_pinocchio_model(
-            target_joints_names=target_joints,
-            has_free_flyer=self.has_free_flyer
+
+        self.model, self.data, self.visual_model, self.visual_data = (
+            load_reduced_pinocchio_model(
+                target_joints_names=target_joints, has_free_flyer=self.has_free_flyer
+            )
         )
-        
+
         # Pin model dimensions
         self.nq = self.model.nq
         self.nv = self.model.nv
         self.nx = self.nq + self.nv
-        
+
         self.get_logger().info(f"Model loaded: nq={self.model.nq}, nv={self.model.nv}")
 
         # Initialize MeshCat
         self.get_logger().info("Initializing MeshCat viewer...")
         self.viz_server = meshcat.Visualizer()
         self.viz_server.open()
-        
+
         # Create Pinocchio visualizer
         self.viz = MeshcatVisualizer(self.model, None, self.visual_model)
         self.viz.initViewer(self.viz_server)
         self.viz.loadViewerModel()
 
         self.target_frame = "gripper_grasping_frame"
-        
+
         # Get frame ID
         if not self.model.existFrame(self.target_frame):
             self.get_logger().error(f"Frame '{self.target_frame}' not found!")
@@ -82,30 +84,27 @@ class OCPReachingNode(Node):
         self.frame_id = self.model.getFrameId(self.target_frame)
         self.get_logger().info(f"Target frame ID: {self.frame_id}")
 
-        self.sensor_received = False # Will be set in callback
+        self.sensor_received = False  # Will be set in callback
         self.current_sensor_py = None
         self.x_measured = None  # Will be set in callback
         self.target_pose = None  # Will be set in callback
-        
+
         self.visualizer = None  # Will be initialized in callback
-        
+
         # QoS for real-time
         qos_rt = QoSProfile(
             reliability=ReliabilityPolicy.BEST_EFFORT,
             durability=DurabilityPolicy.VOLATILE,
             history=HistoryPolicy.KEEP_LAST,
-            depth=1
+            depth=1,
         )
 
         self.sub_sensor = self.create_subscription(
-            Sensor, "sensor",
-            self.sensor_callback_oneshot,
-            qos_profile=qos_rt
+            Sensor, "sensor", self.sensor_callback_oneshot, qos_profile=qos_rt
         )
-        
+
         self.get_logger().info("Waiting for initial sensor measurement...")
-         
-        
+
     def sensor_callback_oneshot(self, msg):
         """ONE-SHOT sensor callback."""
         if self.sensor_received:
@@ -115,19 +114,23 @@ class OCPReachingNode(Node):
             self.current_sensor_py = sensor_msg_to_numpy(msg)
 
             # Extract measured joint state (skip wheels)
-            q_measured = self.current_sensor_py.joint_state.position[2:]  # Without wheels
-            v_measured = self.current_sensor_py.joint_state.velocity[2:]  # Without wheels
-            
+            q_measured = self.current_sensor_py.joint_state.position[
+                2:
+            ]  # Without wheels
+            v_measured = self.current_sensor_py.joint_state.velocity[
+                2:
+            ]  # Without wheels
+
             # DEBUG: Print raw received data
             self.get_logger().info(
-                f"\n{'='*60}\n"
+                f"\n{'=' * 60}\n"
                 f"RAW SENSOR DATA RECEIVED:\n"
-                f"{'='*60}\n"
+                f"{'=' * 60}\n"
                 f"Full position (with wheels): {self.current_sensor_py.joint_state.position}\n"
                 f"Full velocity (with wheels): {self.current_sensor_py.joint_state.velocity}\n"
                 f"Arm position (wheels skipped): {q_measured}\n"
                 f"Arm velocity (wheels skipped): {v_measured}\n"
-                f"{'='*60}"
+                f"{'=' * 60}"
             )
 
             # validation: Check joints dimension
@@ -137,30 +140,37 @@ class OCPReachingNode(Node):
                     f"Sensor dimension mismatch!\n"
                     f"  Expected arm joints: {n_joints}\n"
                     f"  Received: q={len(q_measured)}, v={len(v_measured)}",
-                    throttle_duration_sec=2.0
+                    throttle_duration_sec=2.0,
                 )
                 return
 
             # Reconstruction: FreeFlyer vs Fixed Base
             if self.has_free_flyer:
                 # with planar base
-                base_pose_ff = self.current_sensor_py.base_pose      # [x, y, z, qx, qy, qz, qw]
-                base_twist_ff = self.current_sensor_py.base_twist    # [vx, vy, vz, wx, wy, wz]
+                base_pose_ff = (
+                    self.current_sensor_py.base_pose
+                )  # [x, y, z, qx, qy, qz, qw]
+                base_twist_ff = (
+                    self.current_sensor_py.base_twist
+                )  # [vx, vy, vz, wx, wy, wz]
 
                 # Validation
                 if len(base_pose_ff) != 7:
-                    self.get_logger().error(f"base_pose invalid: {len(base_pose_ff)} (expected 7)")
+                    self.get_logger().error(
+                        f"base_pose invalid: {len(base_pose_ff)} (expected 7)"
+                    )
                     return
                 if len(base_twist_ff) != 6:
-                    self.get_logger().error(f"base_twist invalid: {len(base_twist_ff)} (expected 6)")
+                    self.get_logger().error(
+                        f"base_twist invalid: {len(base_twist_ff)} (expected 6)"
+                    )
                     return
 
                 # CONVERSION FREEFLYER → PLANAR
                 base_pose_planar, base_twist_planar = self._convert_freeflyer_to_planar(
-                    base_pose_ff, 
-                    base_twist_ff
+                    base_pose_ff, base_twist_ff
                 )
-                
+
                 # Concatenate: [base_pose, joint_configs]
                 q_full = np.concatenate([base_pose_planar, q_measured])
                 v_full = np.concatenate([base_twist_planar, v_measured])
@@ -210,7 +220,7 @@ class OCPReachingNode(Node):
 
             # Set target pose
             self.target_pose = pin.SE3(np.eye(3), np.array([2.0, 2.0, 1.0]))
-            
+
             self.get_logger().info(
                 f"Initial state received:\n"
                 f"State dimensions: q={len(q_full)}/{self.nq}, v={len(v_full)}/{self.nv}\n"
@@ -220,13 +230,15 @@ class OCPReachingNode(Node):
 
             # Display frames
             frames_to_display = [self.target_frame]
-            frame_ids = [self.model.getFrameId(frame_name) for frame_name in frames_to_display]
+            frame_ids = [
+                self.model.getFrameId(frame_name) for frame_name in frames_to_display
+            ]
             self.viz.displayFrames(True, frame_ids)
 
             # Display EE position as green sphere
             self.viz.viewer["ee_sphere"].set_object(
                 g.Sphere(0.04),
-                g.MeshLambertMaterial(color=0x00ff00, opacity=0.7)  # Green
+                g.MeshLambertMaterial(color=0x00FF00, opacity=0.7),  # Green
             )
             self.viz.viewer["ee_sphere"].set_transform(
                 tf.translation_matrix(ee_measured)
@@ -235,7 +247,7 @@ class OCPReachingNode(Node):
             # Display target pose (only a red sphere for position)
             self.viz.viewer["target_sphere"].set_object(
                 g.Sphere(0.06),
-                g.MeshLambertMaterial(color=0xff0000, opacity=0.8)  # Red
+                g.MeshLambertMaterial(color=0xFF0000, opacity=0.8),  # Red
             )
             self.viz.viewer["target_sphere"].set_transform(
                 tf.translation_matrix(self.target_pose.translation)
@@ -260,7 +272,7 @@ class OCPReachingNode(Node):
 
             # self.display_results()
             self.get_logger().info("OCP test completed!")
-            
+
             # Initialize visualizer
             self.visualizer = TrajectoryVisualizer(
                 viz=self.viz,
@@ -269,27 +281,28 @@ class OCPReachingNode(Node):
                 frame_id=self.frame_id,
                 target_pose=self.target_pose,
                 dt=self.dt,
-                logger=self.get_logger()
+                logger=self.get_logger(),
             )
-            
+
             # Display results
             self.visualizer.display_results(
                 xs_solution=self.xs_solution,
                 us_solution=self.us_solution,
-                cost=self.solver.cost
+                cost=self.solver.cost,
             )
-            
+
             # Replay trajectory in infinite loop
             self.visualizer.replay_trajectory_loop(
                 trajectory_q=self.trajectory_q,
                 fps=30,
                 slowdown=2.0,
-                pause_between_loops=2.0  # number of seconds to pause between loops
+                pause_between_loops=2.0,  # number of seconds to pause between loops
             )
 
         except Exception as e:
             self.get_logger().error(f"Error in sensor callback: {e}")
             import traceback
+
             traceback.print_exc()
 
     def _convert_freeflyer_to_planar(self, q_ff, v_ff):
@@ -327,10 +340,7 @@ class OCPReachingNode(Node):
         qw = q_ff[6]
 
         # Yaw calculation (rotation around Z)
-        theta = np.arctan2(
-            2.0 * (qw * qz + qx * qy),
-            1.0 - 2.0 * (qy**2 + qz**2)
-        )
+        theta = np.arctan2(2.0 * (qw * qz + qx * qy), 1.0 - 2.0 * (qy**2 + qz**2))
 
         cos_theta = np.cos(theta)
         sin_theta = np.sin(theta)
@@ -351,53 +361,57 @@ class OCPReachingNode(Node):
         v_planar = np.array([vx, vy, omega])
 
         # Validation
-        assert q_planar.shape == (4,), f"q_planar shape error: {q_planar.shape}, expected (4,)"
-        assert v_planar.shape == (3,), f"v_planar shape error: {v_planar.shape}, expected (3,)"
+        assert q_planar.shape == (4,), (
+            f"q_planar shape error: {q_planar.shape}, expected (4,)"
+        )
+        assert v_planar.shape == (3,), (
+            f"v_planar shape error: {v_planar.shape}, expected (3,)"
+        )
 
         return q_planar, v_planar
-    
+
     def build_ocp(self):
         """Build the OCP problem using OCPBuilder."""
-        
+
         self.ocp_builder = OCPBuilder(
             initial_state=self.x_measured,
             rmodel=self.model,
             dt=self.dt,
             horizon_length=self.horizon_steps,
             has_free_flyer=self.has_free_flyer,
-            wheel_params=None  # Use default Tiago params
+            wheel_params=None,  # Use default Tiago params
         )
-        
+
         # Get state and actuation models
         state = self.ocp_builder.state
         actuation = self.ocp_builder.actuation
-        
+
         running_cost_manager = CostModelManager(state, actuation)
-        
+
         # Cost 1: Reach the target (main objective)
         ee_tracking_weight = 1e3
         running_cost_manager.add_frame_placement_cost(
             frame_name=self.target_frame,
             target_pose=self.target_pose,
-            weight=ee_tracking_weight
+            weight=ee_tracking_weight,
         )
-        
+
         # Cost 2: State regularization (keep robot close to initial config)
-        pkg_share = get_package_share_directory('tiago_simple_mpc')
+        pkg_share = get_package_share_directory("tiago_simple_mpc")
         state_weights_config = os.path.join(
-            pkg_share, 'config', 'regulation_state_weights.yaml'
+            pkg_share, "config", "regulation_state_weights.yaml"
         )
         self.get_logger().info(f"Config path: {state_weights_config}")
         state_reg_weight = 1e-2
         running_cost_manager.add_weighted_regulation_state_cost(
-            x_ref=self.x_measured, 
+            x_ref=self.x_measured,
             config_filepath=state_weights_config,
             weight=state_reg_weight,
         )
-        
+
         # Cost 3: Control regularization (keep controls small)
         control_weights_config = os.path.join(
-            pkg_share, 'config', 'regulation_control_weights.yaml'
+            pkg_share, "config", "regulation_control_weights.yaml"
         )
         self.get_logger().info(f"Config path: {control_weights_config}")
         control_reg_weight = 1e-3
@@ -405,56 +419,61 @@ class OCPReachingNode(Node):
             config_filepath=control_weights_config,
             weight=control_reg_weight,
         )
-        
+
         terminal_cost_manager = CostModelManager(state, actuation)
 
         terminal_cost_manager.add_frame_placement_cost(
             frame_name=self.target_frame,
             target_pose=self.target_pose,
-            weight=ee_tracking_weight * 10  # 10x stronger at the end
+            weight=ee_tracking_weight * 10,  # 10x stronger at the end
         )
-        
+
         self.problem = self.ocp_builder.build(
             running_cost_managers=[running_cost_manager] * self.horizon_steps,
             terminal_cost_manager=terminal_cost_manager,
-            integrator_type='euler'
+            integrator_type="euler",
         )
 
-        self.get_logger().info(f"OCP built with {self.horizon_steps} running nodes + 1 terminal node")
-    
+        self.get_logger().info(
+            f"OCP built with {self.horizon_steps} running nodes + 1 terminal node"
+        )
+
     def solve_ocp(self):
         """Solve the OCP using DDP solver."""
-        
+
         # Create solver
         self.solver = crocoddyl.SolverFDDP(self.problem)
-        
+
         # Solver options
         self.solver.setCallbacks([crocoddyl.CallbackVerbose()])
-        
+
         xs_init = [self.x_measured] * (self.horizon_steps + 1)
         us_init = [np.zeros(self.ocp_builder.nu)] * self.horizon_steps
-        
+
         # Solve
         self.get_logger().info("Running FDDP solver...")
         MAX_ITER = 50  # max iteration
         converged = self.solver.solve(xs_init, us_init, MAX_ITER, False)
-        
+
         # Extract trajectory (only positions, not velocities)
         nq = self.model.nq
         self.trajectory_q = [xs[:nq] for xs in self.solver.xs]
-        
+
         if converged:
             self.get_logger().info(f"Solver converged in {self.solver.iter} iterations")
         else:
-            self.get_logger().warn(f"Solver did NOT converge after {self.solver.iter} iterations")
-        
+            self.get_logger().warn(
+                f"Solver did NOT converge after {self.solver.iter} iterations"
+            )
+
         # Store solution
         self.xs_solution = self.solver.xs
         self.us_solution = self.solver.us
 
+
 def main(args=None):
     rclpy.init(args=args)
-    
+
     try:
         node = OCPReachingNode()
         rclpy.spin(node)
@@ -463,10 +482,11 @@ def main(args=None):
     except Exception as e:
         print(f"Error: {e}")
         import traceback
+
         traceback.print_exc()
     finally:
         rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

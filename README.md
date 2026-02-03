@@ -1,7 +1,7 @@
 This repository illustrates the use of **Crocoddyl** and **Pinocchio** for optimal control on mobile manipulators, demonstrated on a PAL Robotics Tiago robot.
 The version considered here is a differential mobile base equipped with a torso and a seven DoFs arm.
 
-## Packages descriptions 
+## Packages descriptions
 ### tiago_lfc_bringup
 Provides environment setup to launch Tiago in Gazebo simulation. Also includes useful launch files for controller management.
 
@@ -18,7 +18,7 @@ Two nodes are available once simulation is running:
 Create workspace and clone repository
 
 ```bash
-mkdir -p tiago_ws/src 
+mkdir -p tiago_ws/src
 cd tiago_ws/src
 git clone git@github.com:Gepetto/gep_tiago_control_stack.git
 vcs import . < tiago_control_stack/tiago_lfc_bringup/dependencies/lfc_dependencies.repos
@@ -42,11 +42,11 @@ colcon build --symlink-install \
 colcon build --symlink-install
 ```
 
-## Usage 
+## Usage
 
 ### Start Tiago, simulated in Gazebo Harmonic and add lfc controllers
 
-You can use simple launch file to set up environment. 
+You can use simple launch file to set up environment.
 Useful launch files can be found under directory tiago_lfc/launch
 
 ```bash

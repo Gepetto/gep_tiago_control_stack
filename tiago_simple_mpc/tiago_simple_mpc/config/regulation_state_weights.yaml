@@ -44,4 +44,4 @@ v_weights:
   - 1.0 # arm_5_joint_vel
   - 1.0 # arm_6_joint_vel
   - 1.0 # arm_7_joint_vel
-  
+

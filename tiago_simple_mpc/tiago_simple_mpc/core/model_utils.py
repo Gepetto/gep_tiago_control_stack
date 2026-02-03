@@ -2,7 +2,7 @@
 
 Description:
     utility module to load and build Pinocchio models from URDF descriptions
-    published on ROS 2 topics. 
+    published on ROS 2 topics.
     Needed by MPC controllers as urdf is not directly accessible via classic files.
     Provides functions to create full or reduced kinematic
     models for robotics simulation and control applications.
@@ -15,24 +15,26 @@ from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
 from std_msgs.msg import String
 import pinocchio as pin
 
+
 class ModelLoaderNode(Node):
     """Create a node to get model from the URDF."""
+
     def __init__(self):
-        super().__init__('temp_model_loader')
+        super().__init__("temp_model_loader")
         self.urdf_xml = None
 
         # QoS Latched
-        qos = QoSProfile(depth=1, 
-                         durability=DurabilityPolicy.TRANSIENT_LOCAL, 
-                         reliability=ReliabilityPolicy.RELIABLE)
+        qos = QoSProfile(
+            depth=1,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+            reliability=ReliabilityPolicy.RELIABLE,
+        )
 
-        self.create_subscription(String, 
-                                 '/robot_description', 
-                                 self.callback, 
-                                 qos)
+        self.create_subscription(String, "/robot_description", self.callback, qos)
 
     def callback(self, msg):
         self.urdf_xml = msg.data
+
 
 def load_reduced_pinocchio_model(target_joints_names, has_free_flyer=False):
     """
@@ -68,12 +70,11 @@ def load_reduced_pinocchio_model(target_joints_names, has_free_flyer=False):
     # Build geometry models from URDF string
     try:
         full_visual_model = pin.buildGeomFromUrdfString(
-            full_model,
-            full_urdf_string,
-            pin.GeometryType.VISUAL,
-            package_dirs=[]
+            full_model, full_urdf_string, pin.GeometryType.VISUAL, package_dirs=[]
         )
-        print(f"[ModelLoader] Visual model loaded: {full_visual_model.ngeoms} geometries")
+        print(
+            f"[ModelLoader] Visual model loaded: {full_visual_model.ngeoms} geometries"
+        )
     except Exception as e:
         print(f"[ModelLoader] Could not load visual model: {e}")
         full_visual_model = pin.GeometryModel()
@@ -107,17 +108,19 @@ def load_reduced_pinocchio_model(target_joints_names, has_free_flyer=False):
         full_model,
         list_of_geom_models=[full_visual_model],
         list_of_joints_to_lock=locked_joint_ids,
-        reference_configuration=pin.neutral(full_model)
+        reference_configuration=pin.neutral(full_model),
     )
-    
+
     reduced_data = reduced_model.createData()
-    
+
     # Extract reduced visual model
-    reduced_visual_model = reduced_geom_models[0] if reduced_geom_models else pin.GeometryModel()
+    reduced_visual_model = (
+        reduced_geom_models[0] if reduced_geom_models else pin.GeometryModel()
+    )
     reduced_visual_data = reduced_visual_model.createData()
 
     # Summary
-    print(f"\n[ModelLoader] Reduced model created:")
+    print("\n[ModelLoader] Reduced model created:")
     print(f"  Dimensions: nq={reduced_model.nq}, nv={reduced_model.nv}")
     print(f"  Target joints: {len(target_joints_names)}")
     print(f"  Locked joints: {len(locked_joint_ids)}")
@@ -126,7 +129,7 @@ def load_reduced_pinocchio_model(target_joints_names, has_free_flyer=False):
     if has_free_flyer:
         joints_nq = reduced_model.nq - 4
         joints_nv = reduced_model.nv - 3
-        print(f"  Planar base: nq=4, nv=3")
+        print("  Planar base: nq=4, nv=3")
         print(f"  joints: nq={joints_nq}, nv={joints_nv}")
 
     return reduced_model, reduced_data, reduced_visual_model, reduced_visual_data
@@ -139,7 +142,7 @@ def load_full_pinocchio_model(has_free_flyer=False):
     2. Waits (blocks) until it receives the URDF from Gazebo/Robot State Publisher.
     3. Builds the full Pinocchio model (with Planar or Fixed base).
     4. Returns (model, data).
-    
+
     Args:
         has_free_flyer: If True, adds Planar base (2D mobile robot)
     """
@@ -173,13 +176,15 @@ def load_full_pinocchio_model(has_free_flyer=False):
     full_data = full_model.createData()
 
     # print joint info for debugging
-    print("="*40)
+    print("=" * 40)
     print(f"[ModelLoader] Model Dimensions: nq={full_model.nq}, nv={full_model.nv}")
     print(f"[ModelLoader] List of {len(full_model.names)} joints:")
     for i, name in enumerate(full_model.names):
         j_model = full_model.joints[i]
         joint_type = j_model.shortname()
-        print(f"  ID {i:02d} | Name: {name:<25} | Type: {joint_type:<10} | nq={j_model.nq} | nv={j_model.nv}")
-    print("="*40)
+        print(
+            f"  ID {i:02d} | Name: {name:<25} | Type: {joint_type:<10} | nq={j_model.nq} | nv={j_model.nv}"
+        )
+    print("=" * 40)
 
     return full_model, full_data
