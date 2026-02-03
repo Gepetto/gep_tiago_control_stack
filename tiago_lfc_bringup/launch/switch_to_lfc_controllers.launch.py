@@ -74,19 +74,25 @@ def generate_launch_description():
     # Deactivate torso_controller
     deactivate_torso = ExecuteProcess(
         cmd=[
-            'ros2', 'control', 'switch_controllers',
-            '--deactivate', 'torso_controller'
+            "ros2",
+            "control",
+            "switch_controllers",
+            "--deactivate",
+            "torso_controller",
         ],
-        output='screen'
+        output="screen",
     )
-    
+
     # Deactivate mobile_base_controller
     deactivate_mobile_base = ExecuteProcess(
         cmd=[
-            'ros2', 'control', 'switch_controllers',
-            '--deactivate', 'mobile_base_controller'
+            "ros2",
+            "control",
+            "switch_controllers",
+            "--deactivate",
+            "mobile_base_controller",
         ],
-        output='screen'
+        output="screen",
     )
 
     # Activate the chain all at once (Passthrough + LFC + JSE)
@@ -132,13 +138,18 @@ def generate_launch_description():
         OnProcessExit(target_action=deactivate_mobile_base, on_exit=[activate_chain])
     )
 
-    return LaunchDescription([
-        pkg_arg, lfc_yaml_arg, jse_yaml_arg, pc_yaml_arg,
-        spawn_linear_feedback_controller,
-        chain_spawn_joint_state_estimator,
-        chain_spawn_passthrough_controller,
-        chain_switch_1,
-        chain_switch_2,
-        chain_switch_3,
-        chain_switch_4,
-    ])
+    return LaunchDescription(
+        [
+            pkg_arg,
+            lfc_yaml_arg,
+            jse_yaml_arg,
+            pc_yaml_arg,
+            spawn_linear_feedback_controller,
+            chain_spawn_joint_state_estimator,
+            chain_spawn_passthrough_controller,
+            chain_switch_1,
+            chain_switch_2,
+            chain_switch_3,
+            chain_switch_4,
+        ]
+    )
