@@ -4,7 +4,7 @@ passthrough_controller:
     type: linear_feedback_controller/PassthroughController
     command_interfaces: [
       wheel_left_joint/effort,
-      # wheel_right_joint/effort,
+      wheel_right_joint/effort,
       # torso_lift_joint/effort,
       arm_1_joint/effort,
       arm_2_joint/effort,
@@ -15,7 +15,7 @@ passthrough_controller:
       arm_7_joint/effort]
     reference_interfaces: [
       wheel_left_joint/effort,
-      # wheel_right_joint/effort,
+      wheel_right_joint/effort,
       # torso_lift_joint/effort,
       arm_1_joint/effort,
       arm_2_joint/effort,

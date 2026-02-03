@@ -57,8 +57,9 @@ def generate_launch_description():
     tuck_arm_done = False
     controllers_done = False
     spawners_seen = 0
-    expected_spawners = 10
-
+    expected_spawners = 9
+    
+    
     def on_tuck_arm_exit_callback(event, context):
         """Callback when tuck_arm.py exits."""
         nonlocal tuck_arm_done

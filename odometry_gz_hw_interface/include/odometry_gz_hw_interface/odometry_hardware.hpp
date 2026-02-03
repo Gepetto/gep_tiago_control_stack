@@ -37,7 +37,7 @@ class OdometryHardware : public gz_ros2_control::GazeboSimSystemInterface {
  private:
   void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
-  std::string topic_name_ = "/mobile_base_controller/odom";
+  std::string topic_name_ = "/odom_mpc";
 
   rclcpp::Node::SharedPtr nh_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;

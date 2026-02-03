@@ -12,7 +12,7 @@ joint_state_estimator:
       base_odom/orientation.w,
 
       wheel_left_joint/position,
-      # wheel_right_joint/position,
+      wheel_right_joint/position,
       # torso_lift_joint/position,
       arm_1_joint/position,
       arm_2_joint/position,
@@ -30,7 +30,7 @@ joint_state_estimator:
       base_odom/angular_velocity.z,
 
       wheel_left_joint/velocity,
-      # wheel_right_joint/velocity,
+      wheel_right_joint/velocity,
       # torso_lift_joint/velocity,
       arm_1_joint/velocity,
       arm_2_joint/velocity,
@@ -41,7 +41,7 @@ joint_state_estimator:
       arm_7_joint/velocity,
 
       wheel_left_joint/effort,
-      # wheel_right_joint/effort,
+      wheel_right_joint/effort,
       # torso_lift_joint/effort,
       arm_1_joint/effort,
       arm_2_joint/effort,
@@ -61,7 +61,7 @@ joint_state_estimator:
       linear_feedback_controller/base_orientation_qw,
 
       linear_feedback_controller/wheel_left_joint/position,
-      # linear_feedback_controller/wheel_right_joint/position,
+      linear_feedback_controller/wheel_right_joint/position,
       # linear_feedback_controller/torso_lift_joint/position,
       linear_feedback_controller/arm_1_joint/position,
       linear_feedback_controller/arm_2_joint/position,
@@ -79,7 +79,7 @@ joint_state_estimator:
       linear_feedback_controller/base_angular_velocity_z,
 
       linear_feedback_controller/wheel_left_joint/velocity,
-      # linear_feedback_controller/wheel_right_joint/velocity,
+      linear_feedback_controller/wheel_right_joint/velocity,
       # linear_feedback_controller/torso_lift_joint/velocity,
       linear_feedback_controller/arm_1_joint/velocity,
       linear_feedback_controller/arm_2_joint/velocity,
@@ -91,7 +91,7 @@ joint_state_estimator:
 
 
       linear_feedback_controller/wheel_left_joint/effort,
-      # linear_feedback_controller/wheel_right_joint/effort,
+      linear_feedback_controller/wheel_right_joint/effort,
       # linear_feedback_controller/torso_lift_joint/effort,
       linear_feedback_controller/arm_1_joint/effort,
       linear_feedback_controller/arm_2_joint/effort,
