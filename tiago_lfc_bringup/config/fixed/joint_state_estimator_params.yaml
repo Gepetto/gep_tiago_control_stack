@@ -1,0 +1,61 @@
+---
+joint_state_estimator:
+  ros__parameters:
+    type: linear_feedback_controller/JointStateEstimator
+    state_interfaces: [
+      torso_lift_joint/position,
+      arm_1_joint/position,
+      arm_2_joint/position,
+      arm_3_joint/position,
+      arm_4_joint/position,
+      arm_5_joint/position,
+      arm_6_joint/position,
+      arm_7_joint/position,
+
+      torso_lift_joint/velocity,
+      arm_1_joint/velocity,
+      arm_2_joint/velocity,
+      arm_3_joint/velocity,
+      arm_4_joint/velocity,
+      arm_5_joint/velocity,
+      arm_6_joint/velocity,
+      arm_7_joint/velocity,
+
+      torso_lift_joint/effort,
+      arm_1_joint/effort,
+      arm_2_joint/effort,
+      arm_3_joint/effort,
+      arm_4_joint/effort,
+      arm_5_joint/effort,
+      arm_6_joint/effort,
+      arm_7_joint/effort
+      ]
+    command_interfaces: [
+
+      linear_feedback_controller/torso_lift_joint/position,
+      linear_feedback_controller/arm_1_joint/position,
+      linear_feedback_controller/arm_2_joint/position,
+      linear_feedback_controller/arm_3_joint/position,
+      linear_feedback_controller/arm_4_joint/position,
+      linear_feedback_controller/arm_5_joint/position,
+      linear_feedback_controller/arm_6_joint/position,
+      linear_feedback_controller/arm_7_joint/position,
+
+      linear_feedback_controller/torso_lift_joint/velocity,
+      linear_feedback_controller/arm_1_joint/velocity,
+      linear_feedback_controller/arm_2_joint/velocity,
+      linear_feedback_controller/arm_3_joint/velocity,
+      linear_feedback_controller/arm_4_joint/velocity,
+      linear_feedback_controller/arm_5_joint/velocity,
+      linear_feedback_controller/arm_6_joint/velocity,
+      linear_feedback_controller/arm_7_joint/velocity,
+
+      linear_feedback_controller/torso_lift_joint/effort,
+      linear_feedback_controller/arm_1_joint/effort,
+      linear_feedback_controller/arm_2_joint/effort,
+      linear_feedback_controller/arm_3_joint/effort,
+      linear_feedback_controller/arm_4_joint/effort,
+      linear_feedback_controller/arm_5_joint/effort,
+      linear_feedback_controller/arm_6_joint/effort,
+      linear_feedback_controller/arm_7_joint/effort
+      ]
