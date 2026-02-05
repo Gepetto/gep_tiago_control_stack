@@ -3,11 +3,14 @@
 <package format="3">
   <name>tiago_agimus_mpc</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Agimus MPC integration for Tiago robot</description>
   <maintainer email="pene.clement@gmail.com">cpene</maintainer>
   <license>TODO: License declaration</license>
 
   <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>agimus_controller_ros</depend>
+  <depend>tiago_lfc_bringup</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

@@ -26,8 +26,8 @@ setup(
     zip_safe=True,
     maintainer="cpene",
     maintainer_email="pene.clement@gmail.com",
-    description="TODO: Package description",
-    license="TODO: License declaration",
+    description="Provide tools to launch a Tiago robot with a linear feedback controller in Gazebo",
+    license="MIT OR Apache-2.0",
     extras_require={
         "test": [
             "pytest",

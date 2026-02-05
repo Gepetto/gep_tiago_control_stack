@@ -25,7 +25,7 @@ setup(
     maintainer="cpene",
     maintainer_email="pene.clement@gmail.com",
     description="Simple MPC controller for Tiago using Crocoddyl",
-    license="Apache-2.0",
+    license="MIT OR Apache-2.0",
     extras_require={
         "test": [
             "pytest",
@@ -34,7 +34,7 @@ setup(
     entry_points={
         "console_scripts": [
             "cartesian_target_mpc_node = tiago_simple_mpc.nodes.cartesian_target_mpc_node:main",
-            "test_ocp_reaching = tiago_simple_mpc.tests.test_ocp_reaching:main",
+            "test_cartesian_target_ocp = tiago_simple_mpc.tests.test_cartesian_target_ocp:main",
         ],
     },
 )
