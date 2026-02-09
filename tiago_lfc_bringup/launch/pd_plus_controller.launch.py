@@ -36,6 +36,12 @@ def generate_launch_description():
                 ]
             )
         ),
+        launch_arguments={
+            "pkg": "tiago_lfc_bringup",
+            "lfc_yaml": "config/fixed/linear_feedback_controller_params.yaml",
+            "jse_yaml": "config/fixed/joint_state_estimator_params.yaml",
+            "pc_yaml": "config/fixed/dummy_controllers.yaml",
+        }.items(),
     )
 
     # pd_plus_controller node
@@ -57,7 +63,7 @@ def generate_launch_description():
     tuck_arm_done = False
     controllers_done = False
     spawners_seen = 0
-    expected_spawners = 10
+    expected_spawners = 9
 
     def on_tuck_arm_exit_callback(event, context):
         """Callback when tuck_arm.py exits."""

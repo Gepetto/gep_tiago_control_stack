@@ -3,9 +3,9 @@
 <package format="3">
   <name>odometry_hardware_interface</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="pene.clement@gmail.com">cpene</maintainer>
-  <license>TODO: License declaration</license>
+  <description>Custom hardware interface reading an Odometry topic.</description>
+  <maintainer email="pene.clement@gmail.com">Clément Pène</maintainer>
+  <license>MIT OR Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

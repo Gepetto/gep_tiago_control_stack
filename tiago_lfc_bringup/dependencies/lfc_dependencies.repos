@@ -1,0 +1,17 @@
+repositories:
+  linear_feedback_controller_msgs:
+    type: git
+    url: https://github.com/loco-3d/linear-feedback-controller-msgs.git
+    version: main
+  linear_feedback_controller:
+    type: git
+    url: https://github.com/loco-3d/linear-feedback-controller.git
+    version: main
+  crocoddyl:
+      type: git
+      url: https://github.com/loco-3d/crocoddyl.git
+      version: devel
+  agimus_controller:
+    type: git
+    url: https://github.com/agimus-project/agimus_controller.git
+    version: humble-devel

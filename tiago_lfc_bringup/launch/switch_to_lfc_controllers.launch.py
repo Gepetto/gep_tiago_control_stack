@@ -67,9 +67,31 @@ def generate_launch_description():
     )
 
     # Deactivate the old arm controller if present
-    # TODO : can it works without being deactivated, as it does not use same hardware interface ?
     deactivate_arm = ExecuteProcess(
         cmd=["ros2", "control", "switch_controllers", "--deactivate", "arm_controller"],
+        output="screen",
+    )
+    # Deactivate torso_controller
+    deactivate_torso = ExecuteProcess(
+        cmd=[
+            "ros2",
+            "control",
+            "switch_controllers",
+            "--deactivate",
+            "torso_controller",
+        ],
+        output="screen",
+    )
+
+    # Deactivate mobile_base_controller
+    deactivate_mobile_base = ExecuteProcess(
+        cmd=[
+            "ros2",
+            "control",
+            "switch_controllers",
+            "--deactivate",
+            "mobile_base_controller",
+        ],
         output="screen",
     )
 
@@ -107,7 +129,13 @@ def generate_launch_description():
         )
     )
     chain_switch_2 = RegisterEventHandler(
-        OnProcessExit(target_action=deactivate_arm, on_exit=[activate_chain])
+        OnProcessExit(target_action=deactivate_arm, on_exit=[deactivate_torso])
+    )
+    chain_switch_3 = RegisterEventHandler(
+        OnProcessExit(target_action=deactivate_torso, on_exit=[deactivate_mobile_base])
+    )
+    chain_switch_4 = RegisterEventHandler(
+        OnProcessExit(target_action=deactivate_mobile_base, on_exit=[activate_chain])
     )
 
     return LaunchDescription(
@@ -121,5 +149,7 @@ def generate_launch_description():
             chain_spawn_passthrough_controller,
             chain_switch_1,
             chain_switch_2,
+            chain_switch_3,
+            chain_switch_4,
         ]
     )

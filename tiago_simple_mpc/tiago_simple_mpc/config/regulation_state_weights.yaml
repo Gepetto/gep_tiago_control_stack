@@ -1,0 +1,46 @@
+# ==============================================================================
+#           CONFIGURATION FILE FOR REGULATION STATE WEIGHTS
+#
+#     Modify the values below. A weight of 0.0 effectively disables the
+#     cost on that specific state variable.
+# ==============================================================================
+
+# A brief description of this configuration's purpose.
+description: "Weights for state regulation."
+
+# --- WEIGHTS ON STATE x = [q, v] ---
+
+# --- WEIGHTS ON CONFIGURATION q (size is 11) ---
+# These weights penalize the difference between the current and reference configuration `q`.
+q_weights:
+  # Planar base configuration (4 DOF in configuration space)
+  - 10.0   # base_x
+  - 10.0   # base_y
+  - 1.0    # theta
+
+  # Arm joints (7 DOF)
+  - 0.1    # arm_1_joint: shoulder pan
+  - 0.1    # arm_2_joint: shoulder lift
+  - 0.1    # arm_3_joint: shoulder roll
+  - 0.1    # arm_4_joint: elbow flex
+  - 0.1    # arm_5_joint: wrist 1
+  - 0.1    # arm_6_joint: wrist 2
+  - 0.1    # arm_7_joint: wrist 3
+
+# --- WEIGHTS ON VELOCITY v (size is 10) ---
+# These weights penalize the difference between the current and reference velocity `v`.
+# A high value here acts as damping.
+v_weights:
+  # Planar base velocities (3 DOF in velocity space)
+  - 100.0 # base_vx
+  - 100.0 # base_vy
+  - 100.0 # base_vz
+
+  # Arm joint velocities (7 DOF)
+  - 1.0 # arm_1_joint_vel
+  - 1.0 # arm_2_joint_vel
+  - 1.0 # arm_3_joint_vel
+  - 1.0 # arm_4_joint_vel
+  - 1.0 # arm_5_joint_vel
+  - 1.0 # arm_6_joint_vel
+  - 1.0 # arm_7_joint_vel

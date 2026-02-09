@@ -1,10 +1,10 @@
 ---
 pd_plus_controller:
   ros__parameters:
-    moving_joint_names: [arm_1_joint, arm_2_joint, arm_3_joint, arm_4_joint,
+    moving_joint_names: [torso_lift_joint, arm_1_joint, arm_2_joint, arm_3_joint, arm_4_joint,
       arm_5_joint, arm_6_joint, arm_7_joint]
-    amplitudes: [0.5, 0.6, 0.1, 0.6, 0.2, 0.2, 0.6]
-    periods: [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0]
-    p_gains: [50.0, 50.0, 50.0, 50.0, 10.0, 5.0, 5.0]
-    d_gains: [0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.0]
+    amplitudes: [2.0, 0.5, 0.6, 0.1, 0.6, 0.2, 0.2, 0.6]
+    periods: [4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0]
+    p_gains: [50.0, 50.0, 50.0, 50.0, 50.0, 10.0, 5.0, 5.0]
+    d_gains: [0.5, 0.5, 0.5, 0.5, 0.5, 0.3, 0.3, 0.0]
     controller_period: 0.01

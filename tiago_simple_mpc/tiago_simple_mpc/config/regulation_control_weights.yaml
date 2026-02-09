@@ -1,0 +1,25 @@
+# ==============================================================================
+#           CONFIGURATION FILE FOR REGULATION CONTROL (TORQUE) WEIGHTS
+#
+#     Modify the values below. A weight of 0.0 would mean the actuator is
+#     "free" to use, while a high value heavily penalizes its usage.
+# ==============================================================================
+
+# A brief description of this configuration's purpose.
+description: "Control weights for control regulation."
+
+# --- WEIGHT ON CONTROL u (size is 9) ---
+# These weights correspond to the cost of applying torque/force to each actuator.
+u_weights:
+  # --- Wheels (2 actuators) ---
+  - 10.0 # [u 0]  Torque of left_wheel_joint
+  - 10.0 # [u 1]  Torque of right_wheel_joint
+
+  # --- Arm (7 actuators) ---
+  - 1.0 # [u 2]  Torque of arm_1_joint: shoulder pan
+  - 1.0 # [u 3]  Torque of arm_2_joint: shoulder lift
+  - 1.0 # [u 4]  Torque of arm_3_joint: shoulder roll
+  - 1.0 # [u 5]  Torque of arm_4_joint: elbow flex
+  - 1.0 # [u 6]  Torque of arm_5_joint: wrist 1
+  - 1.0 # [u 7]  Torque of arm_6_joint: wrist 2
+  - 1.0 # [u 8]  Torque of arm_7_joint: wrist 3

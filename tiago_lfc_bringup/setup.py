@@ -13,13 +13,21 @@ setup(
         ("share/" + package_name, ["package.xml"]),
         (os.path.join("share", package_name, "launch"), glob("launch/*.launch.py")),
         (os.path.join("share", package_name, "config"), glob("config/*.yaml")),
+        (
+            os.path.join("share", package_name, "config/fixed"),
+            glob("config/fixed/*.yaml"),
+        ),
+        (
+            os.path.join("share", package_name, "config/free_flyer"),
+            glob("config/free_flyer/*.yaml"),
+        ),
     ],
     install_requires=["setuptools"],
     zip_safe=True,
     maintainer="cpene",
     maintainer_email="pene.clement@gmail.com",
-    description="TODO: Package description",
-    license="TODO: License declaration",
+    description="Provide tools to launch a Tiago robot with a linear feedback controller in Gazebo",
+    license="MIT OR Apache-2.0",
     extras_require={
         "test": [
             "pytest",
