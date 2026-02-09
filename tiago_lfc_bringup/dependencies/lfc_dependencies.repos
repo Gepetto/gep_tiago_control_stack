@@ -11,3 +11,7 @@ repositories:
       type: git
       url: https://github.com/loco-3d/crocoddyl.git
       version: devel
+  agimus_controller:
+    type: git
+    url: https://github.com/agimus-project/agimus_controller.git
+    version: humble-devel

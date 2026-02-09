@@ -3,7 +3,7 @@ linear_feedback_controller:
     type: linear_feedback_controller/LinearFeedbackController
     chainable_controller:
       command_interfaces:
-        - passthrough_controller/torso_lift_joint/effort
+        # - passthrough_controller/torso_lift_joint/effort
         - passthrough_controller/arm_1_joint/effort
         - passthrough_controller/arm_2_joint/effort
         - passthrough_controller/arm_3_joint/effort
@@ -13,7 +13,7 @@ linear_feedback_controller:
         - passthrough_controller/arm_7_joint/effort
     reference_prefix: linear_feedback_controller
     moving_joint_names:
-      - torso_lift_joint
+      # - torso_lift_joint
       - arm_1_joint
       - arm_2_joint
       - arm_3_joint
@@ -21,9 +21,9 @@ linear_feedback_controller:
       - arm_5_joint
       - arm_6_joint
       - arm_7_joint
-    torso_lift_joint:
-      p: 50.0
-      d: 0.5
+    # torso_lift_joint:
+    #   p: 50.0
+    #   d: 0.5
     arm_1_joint:
       p: 50.0
       d: 0.5

@@ -4,7 +4,7 @@
   <version>0.0.1</version>
   <description>Custom gz_ros2_control GazeboSimSystemInterface reading an Odometry topic.</description>
 
-  <maintainer email="pene;clement@gmail.com">Clément Pène</maintainer>
+  <maintainer email="pene.clement@gmail.com">Clément Pène</maintainer>
   <license>MIT OR Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

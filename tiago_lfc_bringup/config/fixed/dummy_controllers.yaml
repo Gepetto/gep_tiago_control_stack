@@ -3,7 +3,7 @@ passthrough_controller:
   ros__parameters:
     type: linear_feedback_controller/PassthroughController
     command_interfaces: [
-      torso_lift_joint/effort,
+      # torso_lift_joint/effort,
       arm_1_joint/effort,
       arm_2_joint/effort,
       arm_3_joint/effort,
@@ -12,7 +12,7 @@ passthrough_controller:
       arm_6_joint/effort,
       arm_7_joint/effort]
     reference_interfaces: [
-      torso_lift_joint/effort,
+      # torso_lift_joint/effort,
       arm_1_joint/effort,
       arm_2_joint/effort,
       arm_3_joint/effort,

@@ -12,8 +12,8 @@ description: "Control weights for control regulation."
 # These weights correspond to the cost of applying torque/force to each actuator.
 u_weights:
   # --- Wheels (2 actuators) ---
-  - 1.0 # [u 0]  Torque of left_wheel_joint
-  - 1.0 # [u 1]  Torque of right_wheel_joint
+  - 10.0 # [u 0]  Torque of left_wheel_joint
+  - 10.0 # [u 1]  Torque of right_wheel_joint
 
   # --- Arm (7 actuators) ---
   - 1.0 # [u 2]  Torque of arm_1_joint: shoulder pan

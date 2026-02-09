@@ -22,7 +22,10 @@ import linear_feedback_controller_msgs_py.lfc_py_types as lfc_py_types
 
 # MPC imports
 from tiago_simple_mpc.core.model_utils import load_reduced_pinocchio_model
-from tiago_simple_mpc.mpc.build_cartesian_target_ocp import build_cartesian_target_ocp
+from tiago_simple_mpc.mpc.build_cartesian_target_ocp import (
+    CartesianOCPConfig,
+    build_cartesian_target_ocp,
+)
 from tiago_simple_mpc.mpc.mpc_builder import MPCController
 
 
@@ -43,6 +46,10 @@ class MPCNode(Node):
         # Store model
         self.model = pin_model
         self.data = pin_data
+
+        # Load cartesian OCP config
+        self.ocp_config = CartesianOCPConfig.from_package()
+
         self.has_free_flyer = has_free_flyer
         self.target_frame = target_frame
 
