@@ -9,11 +9,11 @@ Description:
 
 """
 
+import pinocchio as pin
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSProfile, DurabilityPolicy, ReliabilityPolicy
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from std_msgs.msg import String
-import pinocchio as pin
 
 
 class ModelLoaderNode(Node):

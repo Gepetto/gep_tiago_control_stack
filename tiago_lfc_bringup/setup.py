@@ -1,5 +1,6 @@
-from glob import glob
 import os
+from glob import glob
+
 from setuptools import find_packages, setup
 
 package_name = "tiago_lfc_bringup"

@@ -1,15 +1,15 @@
-from attr import dataclass
-import numpy as np
+import os
+
 import crocoddyl
+import numpy as np
 import pinocchio as pin
 import yaml
-
-import os
 from ament_index_python.packages import get_package_share_directory
+from attr import dataclass
 
-from tiago_simple_mpc.ocp.ocp_builder import OCPBuilder
-from tiago_simple_mpc.ocp.cost_manager import CostModelManager
 from tiago_simple_mpc.mpc.mpc_builder import MPCOCP
+from tiago_simple_mpc.ocp.cost_manager import CostModelManager
+from tiago_simple_mpc.ocp.ocp_builder import OCPBuilder
 
 
 @dataclass

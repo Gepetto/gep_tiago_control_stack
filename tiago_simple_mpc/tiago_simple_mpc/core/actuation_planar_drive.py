@@ -3,8 +3,8 @@ Custom Actuation Model for Planar Mobile Manipulator
 Handles differential drive kinematics for wheeled base + arm joints
 """
 
-import numpy as np
 import crocoddyl
+import numpy as np
 
 
 class ActuationModelPlanarDrive(crocoddyl.ActuationModelAbstract):

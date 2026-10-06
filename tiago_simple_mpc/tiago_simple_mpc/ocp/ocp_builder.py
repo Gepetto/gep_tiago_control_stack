@@ -1,11 +1,10 @@
-import pinocchio as pin
 import crocoddyl
 import numpy as np
-
-from tiago_simple_mpc.ocp.cost_manager import CostModelManager
+import pinocchio as pin
 
 # Import custom differential drive actuation
 from tiago_simple_mpc.core.actuation_planar_drive import ActuationModelPlanarDrive
+from tiago_simple_mpc.ocp.cost_manager import CostModelManager
 
 
 class OCPBuilder:
