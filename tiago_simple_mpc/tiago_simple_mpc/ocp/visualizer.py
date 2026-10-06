@@ -3,10 +3,11 @@ Visualization utilities for OCP trajectories using MeshCat.
 """
 
 import time
+
+import meshcat.transformations as tf
 import numpy as np
 import pinocchio as pin
 from pinocchio.visualize import MeshcatVisualizer
-import meshcat.transformations as tf
 from rclpy.node import Node
 
 
@@ -55,7 +56,7 @@ class TrajectoryVisualizer:
             slowdown: Factor to slow down (>1) or speed up (<1) the replay
         """
         if not trajectory_q or len(trajectory_q) == 0:
-            self.logger.warn("No trajectory to replay!")
+            self.logger.warning("No trajectory to replay!")
             return
 
         self.logger.info(
@@ -143,7 +144,7 @@ class TrajectoryVisualizer:
                 q_vec > self.model.upperPositionLimit
             ):
                 q_limits_violated = True
-                self.logger.warn(f"Joint limits violated at step {i}")
+                self.logger.warning(f"Joint limits violated at step {i}")
                 break
 
         if not q_limits_violated:
@@ -168,7 +169,7 @@ class TrajectoryVisualizer:
             pause_between_loops: Pause duration (seconds) between loops
         """
         if not trajectory_q or len(trajectory_q) == 0:
-            self.logger.warn("No trajectory to replay!")
+            self.logger.warning("No trajectory to replay!")
             return
 
         self.logger.info(
